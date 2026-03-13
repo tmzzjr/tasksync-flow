@@ -220,8 +220,8 @@ const Index = () => {
                   setEditingSubIdx(null);
                 }}
                 className={`task-item list-none group flex flex-col p-3 rounded-xl cursor-pointer bg-card/40 border border-border hover:border-muted-foreground/30 ${selectedId === task.id ? "selected" : ""
-                  } ${task.completed ? "completed-green opacity-80" : ""} ${isDueToday && !task.completed ? "urgent-today" : isUrgent && !task.completed ? "urgent" : ""
-                  } ${isDueTomorrow && !task.completed ? "bg-amber-500/20 border-amber-500/50" : ""}`}
+                  } ${task.completed ? "completed-green opacity-80" : ""} ${isDueToday && !task.completed ? "urgent-today" : isDueTomorrow && !task.completed ? "urgent-tomorrow" : isUrgent && !task.completed ? "urgent" : ""
+                  }`}
                 style={{ "--task-color": effectiveColor } as React.CSSProperties}
               >
                 <div className="flex items-start gap-3">
