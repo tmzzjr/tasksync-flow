@@ -101,6 +101,15 @@
 .task-item.urgent:not(.completed-green) .task-text { color: white !important; }
 .task-item.urgent:not(.completed-green) .text-muted-foreground { color: rgba(255,255,255,0.8) !important; }
 
+.task-item.urgent-today:not(.completed-green) {
+  background-color: hsl(322, 100%, 50%) !important;
+  color: white !important;
+  border-left-color: white !important;
+  box-shadow: 0 0 15px rgba(255, 20, 147, 0.3);
+}
+.task-item.urgent-today:not(.completed-green) .task-text { color: white !important; }
+.task-item.urgent-today:not(.completed-green) .text-muted-foreground { color: rgba(255,255,255,0.8) !important; }
+
 @keyframes slowPulse {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(0.95); opacity: 0.85; }

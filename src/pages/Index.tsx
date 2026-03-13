@@ -139,7 +139,7 @@ const Index = () => {
 
   // Urgency helpers
   const getUrgency = (task: Task) => {
-    if (!task.dueDate) return { isUrgent: false, isDueToday: false, urgencyText: "" };
+    if (!task.dueDate) return { isUrgent: false, isDueToday: false, isDueTomorrow: false, urgencyText: "" };
     const now = new Date();
     const todayStr = now.toISOString().split("T")[0];
     const tomorrow = new Date();
@@ -150,13 +150,13 @@ const Index = () => {
     const diffMs = dueDateMs - now.getTime();
     const THRESHOLD = 48 * 60 * 60 * 1000;
 
-    if (task.dueDate === todayStr) return { isUrgent: true, isDueToday: true, urgencyText: "DUE TODAY" };
-    if (task.dueDate === tomorrowStr) return { isUrgent: true, isDueToday: false, urgencyText: "DUE TOMORROW" };
+    if (task.dueDate === todayStr) return { isUrgent: true, isDueToday: true, isDueTomorrow: false, urgencyText: "DUE TODAY" };
+    if (task.dueDate === tomorrowStr) return { isUrgent: true, isDueToday: false, isDueTomorrow: true, urgencyText: "DUE TOMORROW" };
     if (diffMs > 0 && diffMs <= THRESHOLD) {
       const hrs = Math.max(1, Math.floor(diffMs / (1000 * 60 * 60)));
-      return { isUrgent: true, isDueToday: false, urgencyText: `Due in ${hrs} hours` };
+      return { isUrgent: true, isDueToday: false, isDueTomorrow: false, urgencyText: `Due in ${hrs} hours` };
     }
-    return { isUrgent: false, isDueToday: false, urgencyText: "" };
+    return { isUrgent: false, isDueToday: false, isDueTomorrow: false, urgencyText: "" };
   };
 
   const dateDisplay = new Date().toLocaleDateString("en-US", {
@@ -207,7 +207,7 @@ const Index = () => {
             <p className="text-center text-muted-foreground text-sm py-8">No active projects.</p>
           )}
           {tasks.map((task) => {
-            const { isUrgent, isDueToday, urgencyText } = getUrgency(task);
+            const { isUrgent, isDueToday, isDueTomorrow, urgencyText } = getUrgency(task);
             const effectiveColor = task.completed ? "#10b981" : task.color || "#6366f1";
             const subCount = (task.subtasks || []).length;
             const completedSub = (task.subtasks || []).filter((s) => s.completed).length;
@@ -220,8 +220,8 @@ const Index = () => {
                   setEditingSubIdx(null);
                 }}
                 className={`task-item list-none group flex flex-col p-3 rounded-xl cursor-pointer bg-card/40 border border-border hover:border-muted-foreground/30 ${selectedId === task.id ? "selected" : ""
-                  } ${task.completed ? "completed-green opacity-80" : ""} ${isUrgent && !task.completed ? "urgent" : ""
-                  }`}
+                  } ${task.completed ? "completed-green opacity-80" : ""} ${isDueToday && !task.completed ? "urgent-today" : isUrgent && !task.completed ? "urgent" : ""
+                  } ${isDueTomorrow && !task.completed ? "bg-amber-500/20 border-amber-500/50" : ""}`}
                 style={{ "--task-color": effectiveColor } as React.CSSProperties}
               >
                 <div className="flex items-start gap-3">
@@ -361,8 +361,8 @@ const Index = () => {
               <button
                 onClick={() => updateSelected({ isTemplate: !selected.isTemplate })}
                 className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-widest ml-auto ${selected.isTemplate
-                    ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
-                    : "border-border text-muted-foreground"
+                  ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
+                  : "border-border text-muted-foreground"
                   }`}
               >
                 <Bookmark className="w-3 h-3" /> Template
