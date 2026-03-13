@@ -17,8 +17,8 @@ import {
   Plus,
   Bookmark,
   X,
-  Zap,
 } from "lucide-react";
+import logoImg from "@/assets/logo.png";
 
 const Index = () => {
   const [tasks, setTasks] = useState<Task[]>(() => sortTasks(loadTasks()));
