@@ -18,7 +18,7 @@ export interface Task {
 const STORAGE_KEY = 'taskflow-tasks';
 
 export const TEAM_USERS = [
-  "Pedro@outfitmd.com",
+  "Thomaz@outfitmd.com",
   "Techteam@outfitmd.com",
   "Matheus@outfitmd@gmail.com",
   "Samira@outfitmd@gmail.com",

@@ -17,8 +17,8 @@ import {
   Plus,
   Bookmark,
   X,
-  Zap,
 } from "lucide-react";
+import logoImg from "@/assets/logo.png";
 
 const Index = () => {
   const [tasks, setTasks] = useState<Task[]>(() => sortTasks(loadTasks()));
@@ -144,8 +144,8 @@ const Index = () => {
         {/* Header */}
         <div className="p-4 border-b border-border">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <Zap className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+              <img src={logoImg} alt="TaskFlow Logo" className="w-10 h-10 object-contain" />
             </div>
             <span className="text-lg font-semibold tracking-tight">TaskFlow</span>
           </div>
