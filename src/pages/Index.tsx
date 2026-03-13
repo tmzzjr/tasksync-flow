@@ -17,6 +17,7 @@ import {
   Plus,
   Bookmark,
   X,
+  GripVertical
 } from "lucide-react";
 import logoImg from "@/assets/logo.png";
 
@@ -29,6 +30,8 @@ const Index = () => {
   const [editingSubIdx, setEditingSubIdx] = useState<number | null>(null);
   const [editSubText, setEditSubText] = useState("");
   const [editSubAssignee, setEditSubAssignee] = useState("");
+  const [dragSubIdx, setDragSubIdx] = useState<number | null>(null);
+  const [dragOverSubIdx, setDragOverSubIdx] = useState<number | null>(null);
   const editInputRef = useRef<HTMLInputElement>(null);
 
   const persist = useCallback((updated: Task[]) => {
@@ -112,6 +115,26 @@ const Index = () => {
     subs[editingSubIdx] = { ...subs[editingSubIdx], text: editSubText.trim(), assignee: editSubAssignee };
     updateSelected({ subtasks: subs });
     setEditingSubIdx(null);
+  };
+
+  const handleDragStart = (idx: number) => {
+    setDragSubIdx(idx);
+  };
+
+  const handleDragEnter = (idx: number) => {
+    if (dragSubIdx === null) return;
+    setDragOverSubIdx(idx);
+  };
+
+  const handleDragEnd = () => {
+    if (dragSubIdx !== null && dragOverSubIdx !== null && dragSubIdx !== dragOverSubIdx && selected) {
+      const subs = [...selected.subtasks];
+      const [draggedItem] = subs.splice(dragSubIdx, 1);
+      subs.splice(dragOverSubIdx, 0, draggedItem);
+      updateSelected({ subtasks: subs });
+    }
+    setDragSubIdx(null);
+    setDragOverSubIdx(null);
   };
 
   // Urgency helpers
@@ -390,16 +413,30 @@ const Index = () => {
                 {(selected.subtasks || []).map((sub, idx) => {
                   const effColor = sub.completed ? "#10b981" : selected.color || "#6366f1";
                   const isEditing = editingSubIdx === idx;
+                  const isDragging = dragSubIdx === idx;
+                  const isOver = dragOverSubIdx === idx && dragSubIdx !== idx;
 
                   return (
                     <li
                       key={idx}
-                      className={`group flex items-center gap-3 p-3 rounded-lg bg-card/60 border border-border/40 ${
+                      draggable={!isEditing}
+                      onDragStart={() => handleDragStart(idx)}
+                      onDragEnter={() => handleDragEnter(idx)}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDragEnd={handleDragEnd}
+                      className={`group flex items-center gap-3 p-3 rounded-lg bg-card/60 border border-border/40 transition-all ${
                         sub.completed ? "opacity-50 completed-green" : ""
-                      }`}
+                      } ${isDragging ? "opacity-30 border-dashed border-primary" : ""} ${
+                        isOver ? "border-primary bg-primary/5" : ""
+                      } cursor-default`}
                       style={{ "--task-color": effColor } as React.CSSProperties}
                       onDoubleClick={() => !isEditing && startEditSub(idx)}
                     >
+                      {!isEditing && (
+                        <div className="cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 -ml-1 pr-1 transition-opacity">
+                          <GripVertical className="w-4 h-4 text-muted-foreground/50" />
+                        </div>
+                      )}
                       {isEditing ? (
                         <>
                           <input
