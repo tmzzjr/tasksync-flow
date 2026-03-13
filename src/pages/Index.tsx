@@ -142,11 +142,16 @@ const Index = () => {
     if (!task.dueDate) return { isUrgent: false, isDueToday: false, urgencyText: "" };
     const now = new Date();
     const todayStr = now.toISOString().split("T")[0];
+    const tomorrow = new Date();
+    tomorrow.setDate(now.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split("T")[0];
+
     const dueDateMs = new Date(task.dueDate + "T23:59:59").getTime();
     const diffMs = dueDateMs - now.getTime();
     const THRESHOLD = 48 * 60 * 60 * 1000;
 
     if (task.dueDate === todayStr) return { isUrgent: true, isDueToday: true, urgencyText: "DUE TODAY" };
+    if (task.dueDate === tomorrowStr) return { isUrgent: true, isDueToday: false, urgencyText: "DUE TOMORROW" };
     if (diffMs > 0 && diffMs <= THRESHOLD) {
       const hrs = Math.max(1, Math.floor(diffMs / (1000 * 60 * 60)));
       return { isUrgent: true, isDueToday: false, urgencyText: `Due in ${hrs} hours` };
@@ -163,7 +168,7 @@ const Index = () => {
   return (
     <div className="flex h-screen overflow-hidden bg-background text-foreground">
       {/* LEFT SIDEBAR */}
-      <div className="w-80 flex flex-col border-r border-border bg-card/50 shrink-0">
+      <div className="w-96 flex flex-col border-r border-border bg-card/50 shrink-0">
         {/* Header */}
         <div className="p-4 border-b border-border">
           <div className="flex items-center gap-3 mb-3">
@@ -214,11 +219,9 @@ const Index = () => {
                   setSelectedId(task.id);
                   setEditingSubIdx(null);
                 }}
-                className={`task-item list-none group flex flex-col p-3 rounded-xl cursor-pointer bg-card/40 border border-border hover:border-muted-foreground/30 ${
-                  selectedId === task.id ? "selected" : ""
-                } ${task.completed ? "completed-green opacity-80" : ""} ${
-                  isUrgent && !task.completed ? "urgent" : ""
-                }`}
+                className={`task-item list-none group flex flex-col p-3 rounded-xl cursor-pointer bg-card/40 border border-border hover:border-muted-foreground/30 ${selectedId === task.id ? "selected" : ""
+                  } ${task.completed ? "completed-green opacity-80" : ""} ${isUrgent && !task.completed ? "urgent" : ""
+                  }`}
                 style={{ "--task-color": effectiveColor } as React.CSSProperties}
               >
                 <div className="flex items-start gap-3">
@@ -236,9 +239,8 @@ const Index = () => {
                     <div className="flex items-center gap-2">
                       {task.isTemplate && <Bookmark className="w-3 h-3 text-amber-400 shrink-0" />}
                       <p
-                        className={`task-text text-sm font-medium truncate ${
-                          task.completed ? "line-through text-muted-foreground" : ""
-                        }`}
+                        className={`task-text text-sm font-medium truncate ${task.completed ? "line-through text-muted-foreground" : ""
+                          }`}
                       >
                         {task.text}
                       </p>
@@ -253,8 +255,8 @@ const Index = () => {
                               isDueToday
                                 ? "bg-white text-black font-extrabold px-2 py-0.5 rounded shadow-lg animate-pulse-slow ml-1"
                                 : isUrgent
-                                ? "bg-black/20 text-white px-1.5 py-0.5 rounded ml-1"
-                                : "ml-1"
+                                  ? "bg-black/20 text-white px-1.5 py-0.5 rounded ml-1"
+                                  : "ml-1"
                             }
                           >
                             {urgencyText}
@@ -358,11 +360,10 @@ const Index = () => {
 
               <button
                 onClick={() => updateSelected({ isTemplate: !selected.isTemplate })}
-                className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-widest ml-auto ${
-                  selected.isTemplate
+                className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-widest ml-auto ${selected.isTemplate
                     ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
                     : "border-border text-muted-foreground"
-                }`}
+                  }`}
               >
                 <Bookmark className="w-3 h-3" /> Template
               </button>
@@ -424,11 +425,9 @@ const Index = () => {
                       onDragEnter={() => handleDragEnter(idx)}
                       onDragOver={(e) => e.preventDefault()}
                       onDragEnd={handleDragEnd}
-                      className={`group flex items-center gap-3 p-3 rounded-lg bg-card/60 border border-border/40 transition-all ${
-                        sub.completed ? "opacity-50 completed-green" : ""
-                      } ${isDragging ? "opacity-30 border-dashed border-primary" : ""} ${
-                        isOver ? "border-primary bg-primary/5" : ""
-                      } cursor-default`}
+                      className={`group flex items-center gap-3 p-3 rounded-lg bg-card/60 border border-border/40 transition-all ${sub.completed ? "opacity-50 completed-green" : ""
+                        } ${isDragging ? "opacity-30 border-dashed border-primary" : ""} ${isOver ? "border-primary bg-primary/5" : ""
+                        } cursor-default`}
                       style={{ "--task-color": effColor } as React.CSSProperties}
                       onDoubleClick={() => !isEditing && startEditSub(idx)}
                     >
