@@ -9,6 +9,8 @@ import {
   TEAM_USERS,
   PRESET_COLORS,
   HARDCODED_TEMPLATE,
+  loadTemplateSubtasks,
+  saveTemplateSubtasks,
 } from "@/lib/taskStore";
 import {
   Calendar,
@@ -24,9 +26,11 @@ import logoImg from "@/assets/logo.png";
 
 const Index = () => {
   const [tasks, setTasks] = useState<Task[]>(() => sortTasks(loadTasks()));
+  const [templateSubs, setTemplateSubs] = useState<Subtask[]>(() => loadTemplateSubtasks());
 
   // Merge hardcoded template with user tasks for display
-  const allTasks = [HARDCODED_TEMPLATE, ...tasks];
+  const liveTemplate = { ...HARDCODED_TEMPLATE, subtasks: templateSubs };
+  const allTasks = [liveTemplate, ...tasks];
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [newTaskText, setNewTaskText] = useState("");
   const [newSubText, setNewSubText] = useState("");
@@ -137,7 +141,12 @@ const Index = () => {
       const subs = [...selected.subtasks];
       const [draggedItem] = subs.splice(dragSubIdx, 1);
       subs.splice(dragOverSubIdx, 0, draggedItem);
-      updateSelected({ subtasks: subs });
+      if (isSelectedTemplate) {
+        setTemplateSubs(subs);
+        saveTemplateSubtasks(subs);
+      } else {
+        updateSelected({ subtasks: subs });
+      }
     }
     setDragSubIdx(null);
     setDragOverSubIdx(null);
