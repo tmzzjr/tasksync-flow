@@ -70,8 +70,9 @@ const Index = () => {
     const clone: Task = {
       ...selected,
       id: Math.random().toString(36).substring(2, 15) + Date.now().toString(36),
-      text: `${selected.text} (Copy)`,
+      text: isSelectedTemplate ? selected.text : `${selected.text} (Copy)`,
       completed: false,
+      subtasks: selected.subtasks.map(s => ({ ...s, completed: false })),
       createdAt: Date.now(),
       isTemplate: false,
     };
