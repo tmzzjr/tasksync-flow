@@ -98,3 +98,17 @@ export const HARDCODED_TEMPLATE: Task = {
   createdAt: 0,
   isTemplate: true,
 };
+
+const TEMPLATE_ORDER_KEY = 'taskflow-template-order';
+
+export function loadTemplateSubtasks(): Subtask[] {
+  try {
+    const saved = localStorage.getItem(TEMPLATE_ORDER_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return HARDCODED_TEMPLATE.subtasks;
+}
+
+export function saveTemplateSubtasks(subtasks: Subtask[]) {
+  localStorage.setItem(TEMPLATE_ORDER_KEY, JSON.stringify(subtasks));
+}
