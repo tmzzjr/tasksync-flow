@@ -8,6 +8,7 @@ import {
   createTask,
   TEAM_USERS,
   PRESET_COLORS,
+  HARDCODED_TEMPLATE,
 } from "@/lib/taskStore";
 import {
   Calendar,
