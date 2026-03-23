@@ -395,6 +395,10 @@ const Index = () => {
             {/* Subtasks */}
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-muted-foreground">Sub-tasks Checklist</h3>
+              {isSelectedTemplate && (
+                <p className="text-xs text-amber-400/80 italic">This is a fixed template — click "Use Template" to create an editable copy.</p>
+              )}
+              {!isSelectedTemplate && (
               <form onSubmit={addSubtask} className="flex gap-2">
                 <input
                   value={newSubText}
