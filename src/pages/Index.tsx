@@ -347,46 +347,50 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Color picker */}
-            <div className="flex items-center gap-2 flex-wrap">
-              {PRESET_COLORS.map((hex) => (
-                <div
-                  key={hex}
-                  className={`color-pill ${selected.color === hex ? "active" : ""}`}
-                  style={{ backgroundColor: hex }}
-                  onClick={() => updateSelected({ color: hex })}
-                  data-color={hex}
-                />
-              ))}
-              <div className="color-wheel-container relative">
+            {/* Color picker - hide for template */}
+            {!isSelectedTemplate && (
+              <div className="flex items-center gap-2 flex-wrap">
+                {PRESET_COLORS.map((hex) => (
+                  <div
+                    key={hex}
+                    className={`color-pill ${selected.color === hex ? "active" : ""}`}
+                    style={{ backgroundColor: hex }}
+                    onClick={() => updateSelected({ color: hex })}
+                    data-color={hex}
+                  />
+                ))}
+                <div className="color-wheel-container relative">
+                  <input
+                    type="color"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={(e) => updateSelected({ color: e.target.value })}
+                  />
+                </div>
+
+                <button
+                  onClick={() => updateSelected({ isTemplate: !selected.isTemplate })}
+                  className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-widest ml-auto ${selected.isTemplate
+                    ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
+                    : "border-border text-muted-foreground"
+                    }`}
+                >
+                  <Bookmark className="w-3 h-3" /> Template
+                </button>
+              </div>
+            )}
+
+            {/* Due date - hide for template */}
+            {!isSelectedTemplate && (
+              <div className="flex items-center gap-3">
+                <label className="text-xs text-muted-foreground font-medium">Due Date</label>
                 <input
-                  type="color"
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  onChange={(e) => updateSelected({ color: e.target.value })}
+                  type="date"
+                  value={selected.dueDate}
+                  onChange={(e) => updateSelected({ dueDate: e.target.value })}
+                  className="bg-secondary/50 border border-border rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary"
                 />
               </div>
-
-              <button
-                onClick={() => updateSelected({ isTemplate: !selected.isTemplate })}
-                className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-widest ml-auto ${selected.isTemplate
-                  ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
-                  : "border-border text-muted-foreground"
-                  }`}
-              >
-                <Bookmark className="w-3 h-3" /> Template
-              </button>
-            </div>
-
-            {/* Due date */}
-            <div className="flex items-center gap-3">
-              <label className="text-xs text-muted-foreground font-medium">Due Date</label>
-              <input
-                type="date"
-                value={selected.dueDate}
-                onChange={(e) => updateSelected({ dueDate: e.target.value })}
-                className="bg-secondary/50 border border-border rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary"
-              />
-            </div>
+            )}
 
             {/* Subtasks */}
             <div className="space-y-3">
