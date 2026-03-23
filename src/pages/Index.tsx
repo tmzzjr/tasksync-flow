@@ -8,6 +8,7 @@ import {
   createTask,
   TEAM_USERS,
   PRESET_COLORS,
+  HARDCODED_TEMPLATE,
 } from "@/lib/taskStore";
 import {
   Calendar,
@@ -23,6 +24,9 @@ import logoImg from "@/assets/logo.png";
 
 const Index = () => {
   const [tasks, setTasks] = useState<Task[]>(() => sortTasks(loadTasks()));
+
+  // Merge hardcoded template with user tasks for display
+  const allTasks = [HARDCODED_TEMPLATE, ...tasks];
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [newTaskText, setNewTaskText] = useState("");
   const [newSubText, setNewSubText] = useState("");
@@ -40,7 +44,8 @@ const Index = () => {
     saveTasks(sorted);
   }, []);
 
-  const selected = tasks.find((t) => t.id === selectedId) || null;
+  const selected = allTasks.find((t) => t.id === selectedId) || null;
+  const isSelectedTemplate = selectedId === HARDCODED_TEMPLATE.id;
 
   // Task CRUD
   const addTask = (e: React.FormEvent) => {
@@ -65,8 +70,9 @@ const Index = () => {
     const clone: Task = {
       ...selected,
       id: Math.random().toString(36).substring(2, 15) + Date.now().toString(36),
-      text: `${selected.text} (Copy)`,
+      text: isSelectedTemplate ? selected.text : `${selected.text} (Copy)`,
       completed: false,
+      subtasks: selected.subtasks.map(s => ({ ...s, completed: false })),
       createdAt: Date.now(),
       isTemplate: false,
     };
@@ -206,7 +212,7 @@ const Index = () => {
           {tasks.length === 0 && (
             <p className="text-center text-muted-foreground text-sm py-8">No active projects.</p>
           )}
-          {tasks.map((task) => {
+          {allTasks.map((task) => {
             const { isUrgent, isDueToday, isDueTomorrow, urgencyText } = getUrgency(task);
             const effectiveColor = task.completed ? "#10b981" : task.color || "#6366f1";
             const subCount = (task.subtasks || []).length;
@@ -315,9 +321,9 @@ const Index = () => {
                   style={{ backgroundColor: selected.color || "#6366f1" }}
                 />
                 <h2
-                  contentEditable
+                  contentEditable={!isSelectedTemplate}
                   suppressContentEditableWarning
-                  onBlur={(e) => updateSelected({ text: e.currentTarget.textContent || selected.text })}
+                  onBlur={(e) => !isSelectedTemplate && updateSelected({ text: e.currentTarget.textContent || selected.text })}
                   className="text-xl font-semibold outline-none flex-1"
                 >
                   {selected.text}
@@ -328,61 +334,71 @@ const Index = () => {
                   onClick={cloneTask}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground text-xs transition-colors"
                 >
-                  <Copy className="w-3 h-3" /> Duplicate
+                  <Copy className="w-3 h-3" /> {isSelectedTemplate ? "Use Template" : "Duplicate"}
                 </button>
+                {!isSelectedTemplate && (
+                  <button
+                    onClick={deleteTask}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-destructive/30 text-destructive hover:bg-destructive/10 text-xs transition-colors"
+                  >
+                    <Trash2 className="w-3 h-3" /> Delete
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Color picker - hide for template */}
+            {!isSelectedTemplate && (
+              <div className="flex items-center gap-2 flex-wrap">
+                {PRESET_COLORS.map((hex) => (
+                  <div
+                    key={hex}
+                    className={`color-pill ${selected.color === hex ? "active" : ""}`}
+                    style={{ backgroundColor: hex }}
+                    onClick={() => updateSelected({ color: hex })}
+                    data-color={hex}
+                  />
+                ))}
+                <div className="color-wheel-container relative">
+                  <input
+                    type="color"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={(e) => updateSelected({ color: e.target.value })}
+                  />
+                </div>
+
                 <button
-                  onClick={deleteTask}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-destructive/30 text-destructive hover:bg-destructive/10 text-xs transition-colors"
+                  onClick={() => updateSelected({ isTemplate: !selected.isTemplate })}
+                  className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-widest ml-auto ${selected.isTemplate
+                    ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
+                    : "border-border text-muted-foreground"
+                    }`}
                 >
-                  <Trash2 className="w-3 h-3" /> Delete
+                  <Bookmark className="w-3 h-3" /> Template
                 </button>
               </div>
-            </div>
+            )}
 
-            {/* Color picker */}
-            <div className="flex items-center gap-2 flex-wrap">
-              {PRESET_COLORS.map((hex) => (
-                <div
-                  key={hex}
-                  className={`color-pill ${selected.color === hex ? "active" : ""}`}
-                  style={{ backgroundColor: hex }}
-                  onClick={() => updateSelected({ color: hex })}
-                  data-color={hex}
-                />
-              ))}
-              <div className="color-wheel-container relative">
+            {/* Due date - hide for template */}
+            {!isSelectedTemplate && (
+              <div className="flex items-center gap-3">
+                <label className="text-xs text-muted-foreground font-medium">Due Date</label>
                 <input
-                  type="color"
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  onChange={(e) => updateSelected({ color: e.target.value })}
+                  type="date"
+                  value={selected.dueDate}
+                  onChange={(e) => updateSelected({ dueDate: e.target.value })}
+                  className="bg-secondary/50 border border-border rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary"
                 />
               </div>
-
-              <button
-                onClick={() => updateSelected({ isTemplate: !selected.isTemplate })}
-                className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-widest ml-auto ${selected.isTemplate
-                  ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
-                  : "border-border text-muted-foreground"
-                  }`}
-              >
-                <Bookmark className="w-3 h-3" /> Template
-              </button>
-            </div>
-
-            {/* Due date */}
-            <div className="flex items-center gap-3">
-              <label className="text-xs text-muted-foreground font-medium">Due Date</label>
-              <input
-                type="date"
-                value={selected.dueDate}
-                onChange={(e) => updateSelected({ dueDate: e.target.value })}
-                className="bg-secondary/50 border border-border rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary"
-              />
-            </div>
+            )}
 
             {/* Subtasks */}
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-muted-foreground">Sub-tasks Checklist</h3>
+              {isSelectedTemplate && (
+                <p className="text-xs text-amber-400/80 italic">This is a fixed template — click "Use Template" to create an editable copy.</p>
+              )}
+              {!isSelectedTemplate && (
               <form onSubmit={addSubtask} className="flex gap-2">
                 <input
                   value={newSubText}
@@ -409,6 +425,7 @@ const Index = () => {
                   <Plus className="w-4 h-4" />
                 </button>
               </form>
+              )}
 
               <ul className="space-y-2">
                 {(selected.subtasks || []).map((sub, idx) => {

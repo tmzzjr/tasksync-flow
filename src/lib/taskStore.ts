@@ -69,3 +69,32 @@ export function createTask(text: string): Task {
     isTemplate: false,
   };
 }
+
+export const HARDCODED_TEMPLATE: Task = {
+  id: '__template_website_launch__',
+  text: 'Website Launch Checklist',
+  completed: false,
+  color: '#10b981',
+  dueDate: '',
+  subtasks: [
+    { text: 'Setup Business Info', completed: false, assignee: 'Samira@outfitmd@gmail.com' },
+    { text: 'Duplicate Snapshot V1 - Create Store', completed: false, assignee: 'Thomaz@outfitmd.com' },
+    { text: 'Upload Logo to GHL', completed: false, assignee: 'Thomaz@outfitmd.com' },
+    { text: 'Create and Upload Website Images', completed: false, assignee: 'Thomaz@outfitmd.com' },
+    { text: 'Create and Upload Products Images', completed: false, assignee: 'Matheus@outfitmd@gmail.com' },
+    { text: 'Edit All Snapshot Pages According to Client\'s Brand', completed: false, assignee: 'Thomaz@outfitmd.com' },
+    { text: 'Add Products To The Collections', completed: false, assignee: 'Matheus@outfitmd@gmail.com' },
+    { text: 'Create Forms on the Contact Us page', completed: false, assignee: 'Matheus@outfitmd@gmail.com' },
+    { text: 'Connect Domain', completed: false, assignee: 'Techteam@outfitmd.com' },
+    { text: 'Setup Automations', completed: false, assignee: 'Techteam@outfitmd.com' },
+    { text: 'Connect Form on the Contact Us Page', completed: false, assignee: 'Thomaz@outfitmd.com' },
+    { text: 'Sync Collections + products to the Home Page', completed: false, assignee: 'Thomaz@outfitmd.com' },
+    { text: 'Attach header and footer logo links', completed: false, assignee: 'Thomaz@outfitmd.com' },
+    { text: 'Add SEO Preview image and Content', completed: false, assignee: 'Thomaz@outfitmd.com' },
+    { text: 'Attatch page redirect links to Banners', completed: false, assignee: 'Thomaz@outfitmd.com' },
+    { text: 'Review Page content (First Check)', completed: false, assignee: 'Thomaz@outfitmd.com' },
+    { text: 'Review Page Content (Last Check)', completed: false, assignee: 'Samira@outfitmd@gmail.com' },
+  ],
+  createdAt: 0,
+  isTemplate: true,
+};
