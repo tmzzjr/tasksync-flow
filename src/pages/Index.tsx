@@ -334,14 +334,16 @@ const Index = () => {
                   onClick={cloneTask}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground text-xs transition-colors"
                 >
-                  <Copy className="w-3 h-3" /> Duplicate
+                  <Copy className="w-3 h-3" /> {isSelectedTemplate ? "Use Template" : "Duplicate"}
                 </button>
-                <button
-                  onClick={deleteTask}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-destructive/30 text-destructive hover:bg-destructive/10 text-xs transition-colors"
-                >
-                  <Trash2 className="w-3 h-3" /> Delete
-                </button>
+                {!isSelectedTemplate && (
+                  <button
+                    onClick={deleteTask}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-destructive/30 text-destructive hover:bg-destructive/10 text-xs transition-colors"
+                  >
+                    <Trash2 className="w-3 h-3" /> Delete
+                  </button>
+                )}
               </div>
             </div>
 
