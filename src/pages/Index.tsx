@@ -425,6 +425,7 @@ const Index = () => {
                   <Plus className="w-4 h-4" />
                 </button>
               </form>
+              )}
 
               <ul className="space-y-2">
                 {(selected.subtasks || []).map((sub, idx) => {
