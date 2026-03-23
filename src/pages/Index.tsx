@@ -26,9 +26,11 @@ import logoImg from "@/assets/logo.png";
 
 const Index = () => {
   const [tasks, setTasks] = useState<Task[]>(() => sortTasks(loadTasks()));
+  const [templateSubs, setTemplateSubs] = useState<Subtask[]>(() => loadTemplateSubtasks());
 
   // Merge hardcoded template with user tasks for display
-  const allTasks = [HARDCODED_TEMPLATE, ...tasks];
+  const liveTemplate = { ...HARDCODED_TEMPLATE, subtasks: templateSubs };
+  const allTasks = [liveTemplate, ...tasks];
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [newTaskText, setNewTaskText] = useState("");
   const [newSubText, setNewSubText] = useState("");
