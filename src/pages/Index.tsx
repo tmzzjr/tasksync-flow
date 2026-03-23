@@ -141,7 +141,12 @@ const Index = () => {
       const subs = [...selected.subtasks];
       const [draggedItem] = subs.splice(dragSubIdx, 1);
       subs.splice(dragOverSubIdx, 0, draggedItem);
-      updateSelected({ subtasks: subs });
+      if (isSelectedTemplate) {
+        setTemplateSubs(subs);
+        saveTemplateSubtasks(subs);
+      } else {
+        updateSelected({ subtasks: subs });
+      }
     }
     setDragSubIdx(null);
     setDragOverSubIdx(null);
