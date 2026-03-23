@@ -44,7 +44,8 @@ const Index = () => {
     saveTasks(sorted);
   }, []);
 
-  const selected = tasks.find((t) => t.id === selectedId) || null;
+  const selected = allTasks.find((t) => t.id === selectedId) || null;
+  const isSelectedTemplate = selectedId === HARDCODED_TEMPLATE.id;
 
   // Task CRUD
   const addTask = (e: React.FormEvent) => {
