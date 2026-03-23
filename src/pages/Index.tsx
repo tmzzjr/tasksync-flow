@@ -9,6 +9,8 @@ import {
   TEAM_USERS,
   PRESET_COLORS,
   HARDCODED_TEMPLATE,
+  loadTemplateSubtasks,
+  saveTemplateSubtasks,
 } from "@/lib/taskStore";
 import {
   Calendar,
