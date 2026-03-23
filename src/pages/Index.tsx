@@ -321,9 +321,9 @@ const Index = () => {
                   style={{ backgroundColor: selected.color || "#6366f1" }}
                 />
                 <h2
-                  contentEditable
+                  contentEditable={!isSelectedTemplate}
                   suppressContentEditableWarning
-                  onBlur={(e) => updateSelected({ text: e.currentTarget.textContent || selected.text })}
+                  onBlur={(e) => !isSelectedTemplate && updateSelected({ text: e.currentTarget.textContent || selected.text })}
                   className="text-xl font-semibold outline-none flex-1"
                 >
                   {selected.text}
