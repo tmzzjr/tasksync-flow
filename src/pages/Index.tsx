@@ -212,7 +212,7 @@ const Index = () => {
           {tasks.length === 0 && (
             <p className="text-center text-muted-foreground text-sm py-8">No active projects.</p>
           )}
-          {tasks.map((task) => {
+          {allTasks.map((task) => {
             const { isUrgent, isDueToday, isDueTomorrow, urgencyText } = getUrgency(task);
             const effectiveColor = task.completed ? "#10b981" : task.color || "#6366f1";
             const subCount = (task.subtasks || []).length;
